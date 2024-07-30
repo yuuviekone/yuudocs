@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Support - Web Docs</title>
+    <title>Dukungan - Dokumen Web</title>
     <style>
       body {
         font-family: Arial, sans-serif;
@@ -13,10 +13,11 @@
       }
 
       .container {
-        position: absolute;
+        position: fixed; /* Menjaga tombol tetap di posisi tetap */
         top: 10px;
-        left: 10px; /* Pindahkan ke sebelah kiri */
+        left: 10px; /* Menjaga tombol di sebelah kiri */
         padding: 0;
+        z-index: 10; /* Menjamin tombol berada di atas konten lain */
       }
 
       .more-options {
@@ -36,12 +37,12 @@
         justify-content: center;
         position: relative;
         z-index: 2;
-        transition: transform 0.3s ease; /* Tambahkan transisi untuk rotasi */
+        transition: transform 0.3s ease, background-color 0.3s ease;
       }
 
+      .more-button div,
       .more-button::before,
-      .more-button::after,
-      .more-button div {
+      .more-button::after {
         content: '';
         display: block;
         width: 20px;
@@ -50,7 +51,7 @@
         position: absolute;
         left: 50%;
         transform: translateX(-50%);
-        transition: background-color 0.3s ease; /* Transisi untuk perubahan warna jika perlu */
+        transition: opacity 0.3s ease; /* Transisi untuk menghilang */
       }
 
       .more-button::before {
@@ -66,14 +67,20 @@
       }
 
       .more-options.open .more-button {
-        transform: rotate(90deg); /* Rotasi saat menu terbuka */
+        transform: rotate(90deg);
+        background-color: transparent; /* Menghilangkan warna latar belakang saat tombol ditekan */
+      }
+
+      .more-options.open .more-button div,
+      .more-options.open .more-button::before,
+      .more-options.open .more-button::after {
+        opacity: 0; /* Menghilangkan garis tiga saat tombol ditekan */
       }
 
       .options-menu {
-        display: none;
-        position: absolute;
+        position: fixed;
         top: 0;
-        left: -200px; /* Initial off-screen position */
+        left: -250px; /* Posisi awal di luar layar */
         background-color: #fff;
         border: 1px solid #ccc;
         border-radius: 4px;
@@ -82,12 +89,13 @@
         list-style: none;
         padding: 0;
         margin: 0;
+        width: 200px; /* Lebar menu */
+        height: 100%; /* Tinggi penuh */
         transition: left 0.3s ease;
       }
 
       .options-menu.show {
-        display: block;
-        left: 0; /* Slide-in position */
+        left: 0; /* Posisi slide-in */
       }
 
       .options-menu li {
@@ -125,25 +133,42 @@
                 <div></div>
             </button>
             <ul class="options-menu" id="optionsMenu">
-              <li></li>
-                <li><a href="index.html">Home</a></li>
-                <li><a href="documentation.html">Documentation</a></li>
-                <li><a href="api-reference.html">API Reference</a></li>
+                <li><a href="index.html">Beranda</a></li>
+                <li><a href="rpg.html">RPG</a></li>
+                <li><a href="tools.html">ALAT</a></li>
+                <li><a href="support.html">DUKUNGAN</a></li>
             </ul>
         </div>
     </div>
 
     <div class="docs-content">
-        <h1>Support</h1>
-        <p>If you need help or have any questions, please reach out to our support team. We are here to assist you with any issues you may encounter.</p>
+        <h1>Dukungan</h1>
+        <p>Jika Anda membutuhkan bantuan atau memiliki pertanyaan, silakan hubungi tim dukungan kami. Kami di sini untuk membantu Anda dengan masalah apa pun yang mungkin Anda hadapi.</p>
     </div>
 
     <script>
-      document.getElementById('moreButton').addEventListener('click', function() {
+      document.getElementById('moreButton').addEventListener('click', function(event) {
+        event.stopPropagation(); // Mencegah klik di tombol menutup menu
         const moreOptions = document.getElementById('moreOptions');
         const menu = document.getElementById('optionsMenu');
-        moreOptions.classList.toggle('open');
-        menu.classList.toggle('show');
+        const isOpen = moreOptions.classList.toggle('open');
+        
+        if (isOpen) {
+          menu.style.left = '0'; // Menampilkan menu
+        } else {
+          menu.style.left = '-250px'; // Menyembunyikan menu
+        }
+      });
+
+      document.addEventListener('click', function(event) {
+        const moreOptions = document.getElementById('moreOptions');
+        const menu = document.getElementById('optionsMenu');
+        const isOpen = moreOptions.classList.contains('open');
+
+        if (isOpen && !moreOptions.contains(event.target)) {
+          moreOptions.classList.remove('open');
+          menu.style.left = '-250px'; // Menyembunyikan menu
+        }
       });
     </script>
 </body>
